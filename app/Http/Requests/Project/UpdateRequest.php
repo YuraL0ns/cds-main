@@ -25,10 +25,10 @@ class UpdateRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:projects,slug,' . $projectId,
-            'published_at' => 'nullable|date',
+            'publication_date' => 'nullable|date',
             'description' => 'required|string',
-            'thumb_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'author_id' => 'required|exists:users,id',
+            'thumb_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'user_id' => 'required|exists:users,id',
             'amount' => 'nullable|numeric',
         ];
     }

@@ -12,20 +12,19 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Http\Requests\Project\UpdateRequest;
 use App\Http\Requests\Project\StoreRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-
-
-
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Inertia\Response
     {
         $projects = Project::all();
-        return Inertia::render('dashboard/projects/index', [
+        return Inertia::render('Dashboard/Projects/index', [
             'projects' => ProjectResource::collection($projects)
         ]);
     }
@@ -35,7 +34,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return Inertia::render('dashboard/projects/create');
+        return Inertia::render('Dashboard/Projects/create');
     }
 
     /**
@@ -43,16 +42,32 @@ class ProjectController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $project = Project::create($request->validated());
-        return redirect()->route('dashboard.projects.index')->with('success', 'Проект успешно добавлен в базу данных.');
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+
+        if ($image = $request->file('thumb_image')) {
+            $destPath = 'storage/projects'. '/' . $data['slug'] ;
+            $profImage = date('Ymd'). '_' . $data['slug'] . '.' . $image->getClientOriginalExtension();
+            $image->move($destPath, $profImage);
+            $pathUrl = '/' .$destPath. '/' .$profImage;
+            $data['thumb_image'] = $pathUrl;
+        }
+
+        Project::create($data);
+
+        return redirect()->route('admin.project.index')->with('success', 'Проект успешно добавлен в базу данных.');
     }
+
+
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show($slug)
     {
-        return Inertia::render('dashboard/projects/show', [
+        $project = Project::where('slug', $slug)->first();
+
+        return Inertia::render('Dashboard/Projects/show', [
             'project' => new ProjectResource($project),
         ]);
     }
@@ -62,7 +77,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return Inertia::render('dashboard/projects/edit', [
+        return Inertia::render('Dashboard/Projects/edit', [
             'project' => new ProjectResource($project),
         ]);
     }
@@ -73,7 +88,7 @@ class ProjectController extends Controller
     public function update(UpdateRequest $request, Project $project)
     {
         $project->update($request->validated());
-        return redirect()->route('dashboard.projects.index')->with('success', 'Проект успешно изменен.');
+        return redirect()->route('admin.project.index')->with('success', 'Проект успешно изменен.');
     }
 
     /**
@@ -82,6 +97,6 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return redirect()->route('dashboard.projects.index')->with('success', 'Проект успешно удален.');
+        return redirect()->route('admin.project.index')->with('success', 'Проект успешно удален.');
     }
 }

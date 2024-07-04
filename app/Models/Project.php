@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $title
@@ -53,7 +53,7 @@ class Project extends Model
         'slug',
         'publication_date',
         'description',
-        'thumb_path',
+        'thumb_image',
         'seo_keywords',
         'user_id',
         'amount',

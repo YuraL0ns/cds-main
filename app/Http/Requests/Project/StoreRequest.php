@@ -22,12 +22,12 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:projects,slug',
-            'published_at' => 'nullable|date',
-            'description' => 'required|string',
-            'thumb_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'author_id' => 'required|exists:users,id',
+            'title' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:projects,slug',
+            'publication_date' => 'nullable|date',
+            'description' => 'nullable|string',
+            'thumb_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:16384',
+            'user_id' => 'nullable|exists:users,id',
             'amount' => 'nullable|numeric',
         ];
     }
