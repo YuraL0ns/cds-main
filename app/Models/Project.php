@@ -62,7 +62,7 @@ class Project extends Model
     /**
      * Связь с моделью User
      */
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }
